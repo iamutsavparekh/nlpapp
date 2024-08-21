@@ -1,28 +1,75 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Results</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>NLP Statistics - Results</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
-<body>
-    <h1>Results</h1>
-    <h2>Your Text NLP Statistics</h2>
-    <ul>
-        <li th:each="entry : ${nlpStats}">
-            <span th:text="${entry.key}">Statistic</span>: <span th:text="${entry.value}">Value</span>
-        </li>
-    </ul>
-    <h2>Aggregated NLP Statistics</h2>
-    <ul>
-        <li th:each="entry : ${aggregatedStats}">
-            <span th:text="${entry.key}">Statistic</span>: <span th:text="${entry.value}">Value</span>
-        </li>
-    </ul>
-    <h2>Comparison</h2>
-    <ul>
-        <li th:each="entry : ${comparison}">
-            <span th:text="${entry.key}">Statistic</span>: <span th:text="${entry.value}">Difference</span>
-        </li>
-    </ul>
-    <a href="/">Upload Another File</a>
+<body style="background-color: #f8f9fa; padding: 50px; font-family: Arial, sans-serif;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="card shadow">
+                    <div class="card-header bg-info text-white text-center">
+                        <h2>Results</h2>
+                    </div>
+                    <div class="card-body">
+                        <h4 class="text-center mb-4">Your Text NLP Statistics</h4>
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr class="bg-light">
+                                    <th>Statistic</th>
+                                    <th>Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="entry : ${nlpStats}">
+                                    <td th:text="${entry.key}"></td>
+                                    <td th:text="${entry.value}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4 class="text-center mt-5 mb-4">Aggregated NLP Statistics</h4>
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr class="bg-light">
+                                    <th>Statistic</th>
+                                    <th>Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="entry : ${aggregatedStats}">
+                                    <td th:text="${entry.key}"></td>
+                                    <td th:text="${entry.value}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4 class="text-center mt-5 mb-4">Comparison</h4>
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr class="bg-light">
+                                    <th>Statistic</th>
+                                    <th>Difference</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="entry : ${comparison}">
+                                    <td th:text="${entry.key}"></td>
+                                    <td th:text="${entry.value}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="text-center mt-4">
+                            <a href="/" class="btn btn-primary">Upload Another File</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

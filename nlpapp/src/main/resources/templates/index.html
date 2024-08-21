@@ -1,14 +1,32 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>NLP Statistics Comparison</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
-<body>
-    <h1>NLP Statistics Comparison</h1>
-    <form method="post" enctype="multipart/form-data" th:action="@{/upload}">
-        <input type="file" name="file" required>
-        <button type="submit">Upload</button>
-    </form>
-    <p th:text="${message}"></p>
+<body style="background-color: #f8f9fa; padding: 50px; font-family: Arial, sans-serif;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h2>NLP Statistics Comparison</h2>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" enctype="multipart/form-data" th:action="@{/upload}">
+                            <div class="form-group">
+                                <label for="file">Select a file to upload:</label>
+                                <input type="file" class="form-control-file" id="file" name="file" required>
+                            </div>
+                            <button type="submit" class="btn btn-success btn-block">Upload</button>
+                        </form>
+                        <p th:text="${message}" class="text-danger mt-3 text-center"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

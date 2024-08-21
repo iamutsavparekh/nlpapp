@@ -1,75 +1,95 @@
 package com.example.nlpapp.controller;
 
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ * Controller for handling NLP-related operations.
+ * Provides endpoints for file upload and NLP statistics calculation.
+ */
 @Controller
 public class NLPController {
 
-    private static final String AGGREGATED_STATS_PATH = "nlpapp\\src\\main\\resources\\aggregated_results.txt";
+    private static final Logger logger = LoggerFactory.getLogger(NLPController.class);
+    private static final String AGGREGATED_STATS_PATH = "aggregated_results.txt";
 
     @GetMapping("/")
     public String index() {
-        return "index"; // Return the name of the Thymeleaf template
+        return "index"; 
+    }
+
+    // Fallback method to handle GET requests to /upload
+    @RequestMapping(value = "/upload", method = RequestMethod.GET)
+    public String handleGetUpload() {
+        return "redirect:/"; // Redirect to the home page
     }
 
     @PostMapping("/upload")
     public String handleFileUpload(@RequestParam("file") MultipartFile file, Model model) {
+        Map<String, Double> nlpStats = new HashMap<>();
+        Map<String, Double> aggregatedStats = new HashMap<>();
+        Map<String, Double> comparison = new HashMap<>();
+
         if (file.isEmpty()) {
             model.addAttribute("message", "Please select a file to upload.");
             return "index";
         }
 
         try {
-            // Convert uploaded file to text
             String text = new String(file.getBytes());
+            logger.info("Uploaded text: " + text);
 
-            // Calculate NLP statistics
-            Map<String, Double> nlpStats = calculateNLPStatistics(text);
+            nlpStats = calculateNLPStatistics(text);
+            logger.info("NLP Stats: " + nlpStats);
 
-            // Load aggregated results
-            Map<String, Double> aggregatedStats = loadAggregatedResults();
+            aggregatedStats = loadAggregatedResults();
+            logger.info("Aggregated Stats: " + aggregatedStats);
 
-            // Compare the statistics
-            Map<String, Double> comparison = compareStatistics(nlpStats, aggregatedStats);
+            comparison = compareStatistics(nlpStats, aggregatedStats);
+            logger.info("Comparison: " + comparison);
 
-            // Add data to model
-            model.addAttribute("nlpStats", nlpStats);
-            model.addAttribute("aggregatedStats", aggregatedStats);
-            model.addAttribute("comparison", comparison);
         } catch (IOException e) {
             e.printStackTrace();
             model.addAttribute("message", "Failed to process the file.");
+            return "index";
         }
 
-        return "result"; // Return the name of the Thymeleaf template
+        model.addAttribute("nlpStats", nlpStats);
+        model.addAttribute("aggregatedStats", aggregatedStats);
+        model.addAttribute("comparison", comparison);
+
+        return "result";
     }
 
     private Map<String, Double> calculateNLPStatistics(String text) {
-        // Implement NLP statistics calculations here (similar to Python)
-        // For demonstration, this example returns some dummy values
         Map<String, Double> stats = new HashMap<>();
-        stats.put("word_count", (double) text.split("\\s+").length);
-        stats.put("sentence_count", (double) text.split("[.!?]").length);
-        stats.put("avg_word_length", text.chars().filter(c -> c != ' ').count() / (double) text.split("\\s+").length);
-        stats.put("unique_words", (double) text.split("\\s+").length); // Placeholder; needs unique word count logic
-        stats.put("stopwords_count", 0.0); // Implement actual stopwords counting logic
+        stats.put("avg_word_count", (double) text.split("\\s+").length);
+        stats.put("avg_sentence_count", (double) text.split("[.!?]").length);
+        stats.put("avg_word_length", (double) text.chars().filter(c -> c != ' ').count() / text.split("\\s+").length);
+        stats.put("avg_unique_words", (double) text.split("\\s+").length); // Placeholder: needs unique word count logic
+        stats.put("avg_stopwords_count", 0.0); // Placeholder: implement actual stopwords counting logic
         return stats;
     }
 
     private Map<String, Double> loadAggregatedResults() throws IOException {
         Map<String, Double> aggregatedStats = new HashMap<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(AGGREGATED_STATS_PATH))) {
+        ClassPathResource resource = new ClassPathResource(AGGREGATED_STATS_PATH);
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(":");
