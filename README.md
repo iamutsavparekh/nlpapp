@@ -18,8 +18,9 @@ This Spring Boot application performs NLP (Natural Language Processing) analysis
 ```bash
 git clone https://github.com/yourusername/nlpapp.git
 cd nlpapp
+```
 
-## What Was Done
+### What Was Done
 
 ### 1. Controller Enhancement
 - **Business Logic in Controller**: Implemented the core NLP functionality directly within the `NLPController`. This includes the logic for calculating NLP statistics, loading aggregated results, and comparing these statistics.
